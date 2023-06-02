@@ -15,7 +15,7 @@ import cv2
 import matplotlib.pyplot as plt
 
 # Specifying the path and Traversing The Data Path
-dataset_path = os.path.expanduser('~/Desktop/Dataset')
+dataset_path = os.path.expanduser('Dataset')
 # looping the dataset files
 filecount = 0
 for root, dirs, files in os.walk(dataset_path):
@@ -29,13 +29,13 @@ data_train = ImageDataGenerator(rescale = 1./255,
                                horizontal_flip = True,
                                validation_split=0.2)
 
-data_training = data_train.flow_from_directory('C:/Users/ajayb/Desktop/Dataset',
+data_training = data_train.flow_from_directory('Dataset',
                                              target_size =(64, 64),
                                              batch_size = 32,
                                              class_mode ='binary',
                                              subset='training')
 
-data_validation = data_train.flow_from_directory('C:/Users/ajayb/Desktop/Dataset',
+data_validation = data_train.flow_from_directory('Dataset',
                                              target_size =(64, 64),
                                              batch_size = 32,
                                              class_mode ='binary',
