@@ -24,17 +24,21 @@ for root, dirs, files in os.walk(dataset_path):
         filecount += 1
 
 print(filecount)
-data_train = ImageDataGenerator(rescale = 1./255,
+# IMageDataGenerator is a Keras class that allows you to generate augmented image data in real-time while training your model.
+# The whole 
+data_train = ImageDataGenerator(rescale = 1./255, # the image is rescale to a range of 0 and 1
                                shear_range =0.2,
                                horizontal_flip = True,
-                               validation_split=0.2)
+                               validation_split=0.2 # The dataset are split into 80% for training and 20% for testing)
 
+# Flow_from _directory method to load the training data from a directory, perform the specified augmentations, and generate batches of training data.
+# for traning sets
 data_training = data_train.flow_from_directory('Dataset',
                                              target_size =(64, 64),
                                              batch_size = 32,
                                              class_mode ='binary',
                                              subset='training')
-
+# for test sets 
 data_validation = data_train.flow_from_directory('Dataset',
                                              target_size =(64, 64),
                                              batch_size = 32,
@@ -69,7 +73,28 @@ cnn = Sequential([
 # Now Compiling With The Optimizer Adam
 cnn.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'] )
 
-# Traning The Model
+# Traning The Model, DataSets passing the traning model 50 times
 cnn.fit(x=data_training, validation_data=data_validation, epochs=50)
 print(cnn.summary())
 
+# Making Dectections
+# resizing the image to the target size of (64, 64) pixels using the load_img function from Keras' preprocessing.image module.
+image_test = load_img('Dataset/potholes/123.jpg', target_size=(64, 64))
+# The img_to_array function converts the loaded image from a PIL (Python Imaging Library) image object to a NumPy array.
+image_test = img_to_array(image_test)
+# The np.expand_dims function adds an extra dimension to the image array along the specified axis (axis=0). 
+image_test = np.expand_dims(image_test, axis = 0)
+# The predict method is called on the cnn model to obtain the prediction result for the image.
+result = cnn.predict(image_test)
+# the class_indices attribute of the data_training object, which provides a mapping between class names and their corresponding indices
+data_training.class_indices
+
+prediction = 'potholes' if result[0][0] == 1 else 'normal'
+
+# if result[0][0] == 1:
+#     prediction = 'potholes'
+                      
+# else:
+#     prediction = 'normal'
+    
+print(prediction)
